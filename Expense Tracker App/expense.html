@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <!-- <titile>Experiment</titile> -->
+    <form onsubmit="saveToLocalStorage(event)">
+
+        <label>Choose expenseamount</label>
+        <input id='expense' type="text" name="expenseamount" required/>
+
+        <label>Choose description</label>
+        <input id='descri' type="text" name="description" required/>
+
+        <lable>Choose a category</lable>
+        <input id='categ' type="text" name ="category"/>
+        <button>Submit</button>
+
+    </form>
+    <ul id="listOfItems"></ul>
+    <script>
+       function saveToLocalStorage(event){
+    event.preventDefault();
+    const amount = event.target.expenseamount.value;
+    const descrip = event.target.description.value;
+    const cate = event.target.category.value;
+
+    const obj ={
+      amount,
+      descrip,
+      cate
+    }
+    localStorage.setItem(obj.amount, JSON.stringify(obj));
+    showNewUserOnScreen(obj)
+  }
+  function showNewUserOnScreen(user){
+    const parentNode = document.getElementById('listOfItems');
+      const childHTML = `<li id =${user.description}> ${user.amount} - ${user.descrip} - ${user.cate}<button onclick = deleteUser('${user.description}')> Delete Data
+        </button> <button onclick = editUserDetails('${user.descrip}','${user.amount}','${user.cate}')> Edit Details</button></li>`
+      parentNode.innerHTML = parentNode.innerHTML + childHTML;
+    
+  }
+  function editUserDetails(descrip,amount,cate){
+    //document.getElementById('expense').value = amount;
+    document.getElementById('descri').value = descrip;
+    document.getElementById('expense').value = amount;
+    document.getElementById('categ').value = cate;
+
+    deleteUser(amount);
+
+  }
+  function deleteUser(amount){
+    localStorage.removeItem(amount)
+     removeUserFromScreen(amount)
+  }
+  function removeUserFromScreen(amount){
+     const parentNode = document.getElementById('listOfItems');
+    const childNodeToBeDeleted = document.getElementById(amount);
+    //  parentNode.removeChild(childNodeToBeDeleted);
+    parentNode.removeChild(childNodeToBeDeleted);
+  }
+  
+    </script>
+</body>
+</html>
+      
