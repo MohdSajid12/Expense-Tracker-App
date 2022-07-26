@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <!-- <titile>Experiment</titile> -->
+    <form onsubmit="saveToLocalStorage(event)">
+
+        <label>Choose expenseamount</label>
+        <input id='expense' type="text" name="expenseamount" required/>
+
+        <label>Choose description</label>
+        <input id='descri' type="text" name="description" required/>
+
+        <lable>Choose a category</lable>
+        <input id='categ' type="text" name ="category"/>
+        <button>Submit</button>
+
+    </form>
+    <ul id="listOfItems"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"> </script>
+    <script>
+       function saveToLocalStorage(event){
+    event.preventDefault();
+    const amount = event.target.expenseamount.value;
+    const descrip = event.target.description.value;
+    const cate = event.target.category.value;
+
+    const obj ={
+      amount,
+      descrip,
+      cate
+    }
+    // localStorage.setItem(obj.amount, JSON.stringify(obj));
+    // showNewUserOnScreen(obj)
+    axios.post("https://crudcrud.com/api/f2b815cebd3045abbce514bbb4aae67a/ExpenseTracker",obj)
+    .then((response) => {
+      showNewUserOnScreen(response.data)
+      console.log(response)
+    })
+    .catch((err) =>{
+      console.log(err)
+    })
+  }
+  window.addEventListener("DOMContentLoaded", () =>{
+     axios.get("https://crudcrud.com/api/f2b815cebd3045abbce514bbb4aae67a/ExpenseTracker")
+     .then((response) =>{
+      for(var i=0 ;i<response.data.length;i++){
+        showNewUserOnScreen(response.data[i])
+      }
+     })
+     .catch((error) =>{
+      console.log(error)
+     })
+  })
+
+
+
+  function showNewUserOnScreen(user){
+    const parentNode = document.getElementById('listOfItems');
+      const childHTML = `<li id =${user._id}> ${user.amount} - ${user.descrip} - ${user.cate}<button onclick = deleteUser('${user.description}')> Delete Data
+        </button> <button onclick = editUserDetails('${user.descrip}','${user.amount}','${user._id}')> Edit Details</button></li>`
+      parentNode.innerHTML = parentNode.innerHTML + childHTML;
+    
+  }
+  function editUserDetails(descrip,amount,userId){
+    //document.getElementById('expense').value = amount;
+    document.getElementById('descri').value = descrip;
+    document.getElementById('expense').value = amount;
+    document.getElementById('categ').value = userId;
+
+    deleteUser(amount);
+
+  }
+  function deleteUser(userId){
+    axios.delete(`https://crudcrud.com/api/f2b815cebd3045abbce514bbb4aae67a/ExpenseTracker/${userId}`)
+    .then((response) => {
+      removeUserFromScreen(userId)
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+    // localStorage.removeItem(amount)
+    //  removeUserFromScreen(amount)
+  }
+  function removeUserFromScreen(userId){
+     const parentNode = document.getElementById('listOfItems');
+    const childNodeToBeDeleted = document.getElementById(userId);
+    //  parentNode.removeChild(childNodeToBeDeleted);
+    parentNode.removeChild(childNodeToBeDeleted);
+  }
+  
+    </script>
+</body>
+</html>
+      
